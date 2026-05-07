@@ -4,6 +4,7 @@ import com.jlls.soundbrain.domain.model.Product
 import com.jlls.soundbrain.domain.model.ProductStatus
 import com.jlls.soundbrain.data.repository.ProductRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 /**
  * Use case for retrieving all products from inventory.
@@ -48,7 +49,7 @@ class GetInventoryStatsUseCase(private val repository: ProductRepository) {
      * @return Flow of InventoryStats data class
      */
     operator fun invoke(): Flow<InventoryStats> = repository.getProducts().let { productsFlow ->
-        kotlinx.coroutines.flow.map(productsFlow) { products ->
+        productsFlow.map { products ->
             InventoryStats(
                 totalProducts = products.size,
                 totalValue = products.sumOf { it.price * it.stock },

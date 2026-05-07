@@ -59,6 +59,9 @@ dependencies {
     // Coil for image loading
     implementation("io.coil-kt:coil-compose:2.5.0")
 
+    // Material Icons Extended (for additional icons like Analytics, Inventory, TrendingUp)
+    implementation("androidx.compose.material:material-icons-extended:1.6.1")
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

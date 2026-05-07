@@ -1,7 +1,6 @@
 package com.jlls.soundbrain.ui.screens.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,21 +11,23 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Inventory
-import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jlls.soundbrain.ui.components.ActivityItem
 import com.jlls.soundbrain.ui.components.StatCard
 import com.jlls.soundbrain.ui.components.StatsRow
-import com.jlls.soundbrain.ui.screens.home.HomeUiState
 import com.jlls.soundbrain.ui.theme.Background
+import com.jlls.soundbrain.ui.theme.SoundBrainTheme
 import com.jlls.soundbrain.ui.theme.StatusActive
 import com.jlls.soundbrain.ui.theme.StatusLowStock
 import com.jlls.soundbrain.ui.theme.StatusOutOfStock
@@ -122,7 +123,7 @@ fun HomeScreen(
             StatCard(
                 title = "Low Stock Items",
                 value = uiState.stats.lowStockCount.toString(),
-                icon = Icons.Default.Remove,
+                icon = Icons.Default.Warning,
                 backgroundColor = StatusLowStock.copy(alpha = 0.15f)
             )
             Spacer(modifier = Modifier.height(12.dp))
@@ -132,7 +133,7 @@ fun HomeScreen(
             StatCard(
                 title = "Out of Stock",
                 value = uiState.stats.outOfStockCount.toString(),
-                icon = Icons.Default.Remove,
+                icon = Icons.Default.Warning,
                 backgroundColor = StatusOutOfStock.copy(alpha = 0.15f)
             )
             Spacer(modifier = Modifier.height(24.dp))
@@ -160,5 +161,13 @@ fun HomeScreen(
         item {
             Spacer(modifier = Modifier.height(80.dp))
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HomeScreenPreview() {
+    SoundBrainTheme {
+        HomeScreen()
     }
 }

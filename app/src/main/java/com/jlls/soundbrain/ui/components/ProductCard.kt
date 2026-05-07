@@ -31,6 +31,7 @@ import com.jlls.soundbrain.domain.model.ProductStatus
 import com.jlls.soundbrain.ui.theme.StatusActive
 import com.jlls.soundbrain.ui.theme.StatusLowStock
 import com.jlls.soundbrain.ui.theme.StatusOutOfStock
+import androidx.compose.ui.tooling.preview.Preview
 
 /**
  * Product card component with Instagram-style design.
@@ -240,5 +241,37 @@ fun ProductCardCompact(
                 }
             }
         }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+private fun ProductCardPreview() {
+    val sampleProduct = Product(
+        id = "PROD-001",
+        name = "Wireless Noise-Canceling Headphones",
+        description = "Premium over-ear headphones with active noise cancellation.",
+        category = "Electronics",
+        price = 249.99,
+        stock = 45,
+        status = ProductStatus.ACTIVE,
+        imageUrl = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400"
+    )
+    Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+        ProductCard(
+            product = sampleProduct,
+            onClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun StatusBadgePreview() {
+    Column(modifier = Modifier.padding(16.dp)) {
+        StatusBadge(status = ProductStatus.ACTIVE, stock = 45)
+        Spacer(modifier = Modifier.height(8.dp))
+        StatusBadge(status = ProductStatus.LOW_STOCK, stock = 8)
+        Spacer(modifier = Modifier.height(8.dp))
+        StatusBadge(status = ProductStatus.OUT_OF_STOCK, stock = 0)
     }
 }

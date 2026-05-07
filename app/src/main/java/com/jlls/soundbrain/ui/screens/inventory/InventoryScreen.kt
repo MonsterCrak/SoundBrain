@@ -14,13 +14,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jlls.soundbrain.ui.components.InventoryShimmerList
 import com.jlls.soundbrain.ui.components.ProductCard
 import com.jlls.soundbrain.ui.theme.Background
+import com.jlls.soundbrain.ui.theme.SoundBrainTheme
 
 /**
  * Inventory screen displaying products in an Instagram-style feed.
@@ -80,5 +83,12 @@ fun InventoryScreen(
                 }
             }
         }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+private fun InventoryScreenPreview() {
+    SoundBrainTheme {
+        InventoryScreen()
     }
 }

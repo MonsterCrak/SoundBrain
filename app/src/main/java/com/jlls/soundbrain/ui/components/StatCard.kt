@@ -12,8 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Inventory
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import com.jlls.soundbrain.ui.theme.Primary
 
 /**
@@ -201,6 +205,30 @@ private fun QuickStatItem(
             text = label,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+@Preview(showBackground = true)
+@Composable
+private fun StatCardPreview() {
+    Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+        StatCard(
+            title = "Total Products",
+            value = "125",
+            icon = Icons.Default.Inventory,
+            backgroundColor = Primary.copy(alpha = 0.1f)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ActivityItemPreview() {
+    Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+        ActivityItem(
+            action = "Added 50 units",
+            productName = "Wireless Headphones",
+            timestamp = "2 hours ago"
         )
     }
 }

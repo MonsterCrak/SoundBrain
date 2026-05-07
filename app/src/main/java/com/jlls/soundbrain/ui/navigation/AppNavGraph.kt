@@ -1,6 +1,18 @@
 package com.jlls.soundbrain.ui.navigation
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -76,34 +88,23 @@ private fun PlaceholderScreen(
     title: String,
     description: String
 ) {
-    androidx.compose.foundation.layout.Column(
-        modifier = androidx.compose.ui.Modifier
+    Column(
+        modifier = Modifier
             .fillMaxSize()
             .padding(32.dp),
-        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
-        verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        androidx.compose.material3.Text(
+        Text(
             text = title,
-            style = androidx.compose.material3.MaterialTheme.typography.headlineMedium,
-            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold
         )
-        androidx.compose.foundation.layout.Spacer(
-            modifier = androidx.compose.ui.Modifier.height(8.dp)
-        )
-        androidx.compose.material3.Text(
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
             text = description,
-            style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
-            color = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
-
-private fun androidx.compose.ui.Modifier.fillMaxSize() =
-    this.then(androidx.compose.foundation.layout.fillMaxSize())
-
-private fun androidx.compose.ui.Modifier.height(dp: Int) =
-    this.then(androidx.compose.foundation.layout.height(dp.dp))
-
-private fun androidx.compose.foundation.layout.Spacer(modifier: androidx.compose.ui.Modifier) =
-    androidx.compose.foundation.layout.Spacer(modifier = modifier)

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -21,8 +22,33 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jlls.soundbrain.ui.theme.Divider
+
+@Preview(showBackground = true)
+@Composable
+fun ShimmerEffectPreview() {
+    Column(modifier = Modifier.padding(16.dp)) {
+        ShimmerEffect(widthFactor = 0.7f, height = 20)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProductCardShimmerPreview() {
+    Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+        ProductCardShimmer(modifier = Modifier.padding(16.dp))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun InventoryShimmerListPreview() {
+    Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+        InventoryShimmerList()
+    }
+}
 
 /**
  * Shimmer effect composable for loading states.

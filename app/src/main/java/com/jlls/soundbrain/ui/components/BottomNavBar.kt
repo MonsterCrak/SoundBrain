@@ -1,28 +1,25 @@
 package com.jlls.soundbrain.ui.components
 
-import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Inventory2
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
+import com.jlls.soundbrain.ui.navigation.BottomNavItem
 import com.jlls.soundbrain.ui.theme.OnSurface
 import com.jlls.soundbrain.ui.theme.Primary
 import com.jlls.soundbrain.ui.theme.Surface
-
-/**
- * Navigation item data class for type-safe navigation.
- */
-data class BottomNavItem(
-    val route: String,
-    val label: String,
-    val icon: ImageVector,
-    val selectedIcon: ImageVector
-)
 
 /**
  * Custom bottom navigation bar with Instagram-style minimal design.
@@ -74,4 +71,27 @@ fun BottomNavBar(
             )
         }
     }
+}
+@Preview(showBackground = true)
+@Composable
+private fun BottomNavBarPreview() {
+    val sampleItems = listOf(
+        BottomNavItem(
+            route = "home",
+            label = "Home",
+            icon = Icons.Outlined.Home,
+            selectedIcon = Icons.Filled.Home
+        ),
+        BottomNavItem(
+            route = "inventory",
+            label = "Inventory",
+            icon = Icons.Outlined.Inventory2,
+            selectedIcon = Icons.Filled.Inventory2
+        )
+    )
+    BottomNavBar(
+        items = sampleItems,
+        selectedRoute = "home",
+        onItemClick = {}
+    )
 }

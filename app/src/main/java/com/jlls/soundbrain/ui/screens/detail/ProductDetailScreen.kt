@@ -27,6 +27,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.jlls.soundbrain.domain.model.Product
@@ -43,6 +45,7 @@ import com.jlls.soundbrain.ui.components.StatusBadge
 import com.jlls.soundbrain.ui.components.ShimmerEffect
 import com.jlls.soundbrain.ui.theme.Background
 import com.jlls.soundbrain.ui.theme.Primary
+import com.jlls.soundbrain.ui.theme.SoundBrainTheme
 
 /**
  * Product Detail screen - immersive view with large image and full details.
@@ -249,5 +252,15 @@ private fun ProductDetailContent(
 
             Spacer(modifier = Modifier.height(80.dp)) // Bottom nav padding
         }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+private fun ProductDetailScreenPreview() {
+    SoundBrainTheme {
+        ProductDetailScreen(
+            productId = "PROD-001",
+            onBack = {}
+        )
     }
 }

@@ -1,51 +1,51 @@
 package com.jlls.soundbrain.ui.theme
 
 import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 // ============================================================================
-// NEXUS RETAIL INTELLIGENCE - MATERIAL 3 THEME
+// SOUNDBRAIN MUSIC AI - MATERIAL 3 THEME
 // ============================================================================
-// Instagram-style theme with:
-// - Soft light background for comfortable viewing
-// - Deep Violet as primary accent color
-// - Clean white cards for content hierarchy
-// - Proper dark mode support
+// Zen-minimalism theme with:
+// - Soft violet primary for brand identity
+// - Light airy background for Zen aesthetic
+// - Glassmorphism support
+// - Clean dark mode support
 // ============================================================================
 
 /**
- * Light color scheme for the app.
- * Uses soft gray background (#F8F9FA) and white cards.
+ * Light color scheme for SoundBrain.
+ * Uses very light gray background (#FAFBFC) and white cards.
  */
 private val LightColorScheme = lightColorScheme(
     primary = Primary,
     onPrimary = OnPrimary,
-    primaryContainer = AccentLight,
+    primaryContainer = Primary.copy(alpha = 0.1f),
     onPrimaryContainer = Primary,
 
-    secondary = PrimaryVariant,
+    secondary = AccentCyan,
     onSecondary = OnPrimary,
-    secondaryContainer = AccentLight,
-    onSecondaryContainer = PrimaryVariant,
+    secondaryContainer = AccentCyan.copy(alpha = 0.1f),
+    onSecondaryContainer = AccentCyan,
 
-    tertiary = StatusActive,
+    tertiary = AccentPink,
     onTertiary = OnPrimary,
-    tertiaryContainer = StatusActive.copy(alpha = 0.1f),
-    onTertiaryContainer = StatusActive,
+    tertiaryContainer = AccentPink.copy(alpha = 0.1f),
+    onTertiaryContainer = AccentPink,
 
-    error = StatusOutOfStock,
+    error = Color(0xFFEF4444),
     onError = OnPrimary,
-    errorContainer = StatusOutOfStock.copy(alpha = 0.1f),
-    onErrorContainer = StatusOutOfStock,
+    errorContainer = Color(0xFFEF4444).copy(alpha = 0.1f),
+    onErrorContainer = Color(0xFFEF4444),
 
     background = Background,
     onBackground = OnBackground,
@@ -58,36 +58,35 @@ private val LightColorScheme = lightColorScheme(
     outline = Border,
     outlineVariant = Divider,
 
-    // Inverse colors for surfaces that need inversion
     inverseSurface = DarkSurface,
     inverseOnSurface = DarkOnSurface,
     inversePrimary = DarkPrimary
 )
 
 /**
- * Dark color scheme for the app.
- * Uses dark blue-black background with lighter text.
+ * Dark color scheme for SoundBrain.
+ * Uses dark background with lighter text.
  */
 private val DarkColorScheme = darkColorScheme(
     primary = DarkPrimary,
     onPrimary = DarkOnPrimary,
-    primaryContainer = Primary,
+    primaryContainer = DarkPrimary.copy(alpha = 0.2f),
     onPrimaryContainer = DarkPrimary,
 
-    secondary = DarkPrimary,
-    onSecondary = DarkOnPrimary,
-    secondaryContainer = PrimaryVariant,
-    onSecondaryContainer = DarkPrimary,
+    secondary = AccentCyan,
+    onSecondary = OnPrimary,
+    secondaryContainer = AccentCyan.copy(alpha = 0.2f),
+    onSecondaryContainer = AccentCyan,
 
-    tertiary = DarkStatusActive,
-    onTertiary = DarkOnPrimary,
-    tertiaryContainer = DarkStatusActive.copy(alpha = 0.2f),
-    onTertiaryContainer = DarkStatusActive,
+    tertiary = AccentPink,
+    onTertiary = OnPrimary,
+    tertiaryContainer = AccentPink.copy(alpha = 0.2f),
+    onTertiaryContainer = AccentPink,
 
-    error = DarkStatusOutOfStock,
+    error = Color(0xFFF87171),
     onError = DarkOnPrimary,
-    errorContainer = DarkStatusOutOfStock.copy(alpha = 0.2f),
-    onErrorContainer = DarkStatusOutOfStock,
+    errorContainer = Color(0xFFF87171).copy(alpha = 0.2f),
+    onErrorContainer = Color(0xFFF87171),
 
     background = DarkBackground,
     onBackground = DarkOnBackground,
@@ -106,24 +105,17 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 /**
- * Main theme composable for the Nexus Retail Intelligence app.
+ * Main theme composable for SoundBrain Music AI.
  *
  * @param darkTheme Whether to use dark theme (default: follow system)
- * @param dynamicColor Whether to use dynamic color from Material You (Android 12+)
  * @param content The content to apply the theme to
  */
 @Composable
-fun NexusTheme(
+fun SoundBrainTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = false, // Disabled for consistent branding
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        // Dynamic color is disabled to maintain consistent Instagram-style branding
-        // Enable this on Android 12+ if you want Material You colors
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -139,17 +131,4 @@ fun NexusTheme(
         typography = Typography,
         content = content
     )
-}
-
-/**
- * Alias for SoundBrainTheme to maintain backward compatibility.
- * Use NexusTheme for new code.
- */
-@Composable
-fun SoundBrainTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
-) {
-    NexusTheme(darkTheme = darkTheme, dynamicColor = dynamicColor, content = content)
 }

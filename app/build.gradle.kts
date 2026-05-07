@@ -62,6 +62,9 @@ dependencies {
     // Material Icons Extended (for additional icons like Analytics, Inventory, TrendingUp)
     implementation("androidx.compose.material:material-icons-extended:1.6.1")
 
+    // Lottie for animations
+    implementation(libs.lottie.compose)
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

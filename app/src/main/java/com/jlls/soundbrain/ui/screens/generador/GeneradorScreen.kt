@@ -100,7 +100,6 @@ fun GeneradorScreen(
             onStyleSelected = viewModel::selectStyle
         )
 
-        Spacer(modifier = Modifier.weight(1f))
         Spacer(modifier = Modifier.height(32.dp))
 
         // Generate Button with pulse animation
@@ -109,7 +108,7 @@ fun GeneradorScreen(
             onClick = { viewModel.generateSong() }
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(80.dp))
     }
 }
 

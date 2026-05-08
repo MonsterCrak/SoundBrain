@@ -1,17 +1,16 @@
 package com.jlls.soundbrain.ui.screens.inicio
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,14 +22,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Share
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,15 +38,12 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -57,10 +52,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.jlls.soundbrain.domain.model.Song
 import com.jlls.soundbrain.ui.theme.Background
+import com.jlls.soundbrain.ui.theme.Primary
 
 /**
- * Inicio (Home/Library) screen showing song library.
- * Redesigned with better visual hierarchy, shadows, and animations.
+ * Inicio (Home/Library) screen - Premium Minimalist Design.
+ * "The Glass & Air Concept" - Clean, spacious, with glassmorphism accents.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -70,49 +66,52 @@ fun InicioScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val sheetState = rememberModalBottomSheetState()
+    val listState = rememberLazyListState()
 
     Box(modifier = modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Background),
-            contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 100.dp)
+            contentPadding = PaddingValues(bottom = 100.dp)
         ) {
-            // Header
+            // Header with ample spacing
             item {
                 Text(
                     text = "Library",
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 24.dp)
                 )
             }
 
-            // Horizontal Album Covers Carousel - Larger with titles
+            // Recent Section with larger cards
             if (uiState.recentSongs.isNotEmpty()) {
                 item {
                     Text(
                         text = "Recent",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
                     )
 
                     LazyRow(
-                        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 20.dp),
+                        state = listState,
+                        contentPadding = PaddingValues(horizontal = 24.dp),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         items(uiState.recentSongs) { song ->
-                            AlbumCoverCard(
+                            RecentAlbumCard(
                                 song = song,
-                                onClick = { viewModel.selectSong(song) }
+                                isPlaying = uiState.currentlyPlaying?.id == song.id,
+                                onClick = { viewModel.playSong(song) }
                             )
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(32.dp))
                 }
             }
 
@@ -120,10 +119,10 @@ fun InicioScreen(
             item {
                 Text(
                     text = "All Songs",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
                 )
             }
 
@@ -131,21 +130,13 @@ fun InicioScreen(
                 items = uiState.songs,
                 key = { it.id }
             ) { song ->
-                AnimatedVisibility(
-                    visible = true,
-                    enter = fadeIn(animationSpec = tween(300)) + slideInVertically(
-                        initialOffsetY = { it / 2 },
-                        animationSpec = tween(300)
-                    ),
-                    exit = fadeOut()
-                ) {
-                    SongCard(
-                        song = song,
-                        onLongClick = { viewModel.selectSong(song) },
-                        onPlayClick = { viewModel.playSong(song) },
-                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
-                    )
-                }
+                MinimalistSongItem(
+                    song = song,
+                    isPlaying = uiState.currentlyPlaying?.id == song.id,
+                    onPlayClick = { viewModel.playSong(song) },
+                    onLongClick = { viewModel.selectSong(song) },
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 6.dp)
+                )
             }
         }
 
@@ -177,150 +168,175 @@ fun InicioScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun AlbumCoverCard(
+private fun RecentAlbumCard(
     song: Song,
+    isPlaying: Boolean,
     onClick: () -> Unit
 ) {
-    var isPressed by remember { mutableStateOf(false) }
+    val listState = rememberLazyListState()
+    val isInFocus = listState.firstVisibleItemIndex >= 0
+
     val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.95f else 1f,
-        animationSpec = tween(150),
+        targetValue = if (isInFocus) 1f else 0.95f,
+        animationSpec = tween(300),
         label = "scale"
     )
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = Modifier
+            .size(160.dp)
+            .scale(scale)
+            .clip(RoundedCornerShape(32.dp))
+            .clickable(onClick = onClick)
     ) {
-        Card(
+        AsyncImage(
+            model = song.coverUrl,
+            contentDescription = song.title,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        // Glass overlay at bottom
+        Box(
             modifier = Modifier
-                .size(140.dp)
-                .scale(scale)
-                .shadow(8.dp, RoundedCornerShape(24.dp))
-                .clip(RoundedCornerShape(24.dp))
-                .combinedClickable(
-                    onClick = onClick,
-                    onLongClick = {}
-                ),
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .height(72.dp)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color.Black.copy(alpha = 0.7f)
+                        )
+                    )
+                )
+        )
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(16.dp)
         ) {
-            AsyncImage(
-                model = song.coverUrl,
-                contentDescription = song.title,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
+            Text(
+                text = song.title,
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.White,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = song.promptStyle.displayName,
+                style = MaterialTheme.typography.labelSmall,
+                color = Color.White.copy(alpha = 0.8f)
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = song.title,
-            style = MaterialTheme.typography.labelMedium,
-            fontWeight = FontWeight.SemiBold,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.width(140.dp)
-        )
-
-        Text(
-            text = song.promptStyle.displayName,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        // Playing indicator
+        if (isPlaying) {
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Primary.copy(alpha = 0.9f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.PlayArrow,
+                    contentDescription = "Playing",
+                    tint = Color.White,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+        }
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun SongCard(
+private fun MinimalistSongItem(
     song: Song,
-    onLongClick: () -> Unit,
+    isPlaying: Boolean,
     onPlayClick: () -> Unit,
+    onLongClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(
+    val accentColor = if (isPlaying) Primary else MaterialTheme.colorScheme.onSurfaceVariant
+
+    Row(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(4.dp, RoundedCornerShape(20.dp))
-            .clip(RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(16.dp))
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+                shape = RoundedCornerShape(16.dp)
+            )
+            .background(MaterialTheme.colorScheme.surface)
             .combinedClickable(
                 onClick = onPlayClick,
                 onLongClick = onLongClick
-            ),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            )
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
+        // Album art - smaller, tighter corners
+        AsyncImage(
+            model = song.coverUrl,
+            contentDescription = song.title,
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Album art
-            AsyncImage(
-                model = song.coverUrl,
-                contentDescription = song.title,
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(RoundedCornerShape(16.dp)),
-                contentScale = ContentScale.Crop
+                .size(52.dp)
+                .clip(RoundedCornerShape(12.dp)),
+            contentScale = ContentScale.Crop
+        )
+
+        Spacer(modifier = Modifier.width(14.dp))
+
+        // Song info - compact typography
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = song.title,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = if (isPlaying) Primary else MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
 
-            Spacer(modifier = Modifier.width(14.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
-            // Song info
-            Column(modifier = Modifier.weight(1f)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
-                    text = song.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    text = song.promptStyle.displayName,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-
-                Spacer(modifier = Modifier.height(2.dp))
-
                 Text(
-                    text = "${song.artistName} • ${song.promptStyle.displayName}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    text = " • ",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-
-                Spacer(modifier = Modifier.height(2.dp))
-
                 Text(
                     text = formatDate(song.createdAt),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                )
-            }
-
-            // Play indicator
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .shadow(2.dp, RoundedCornerShape(12.dp))
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.primary)
-                    .padding(8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.PlayArrow,
-                    contentDescription = "Play",
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.size(24.dp)
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
+
+        // Minimalist play icon - thin line, no background
+        Icon(
+            imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+            contentDescription = if (isPlaying) "Pause" else "Play",
+            tint = accentColor,
+            modifier = Modifier
+                .size(28.dp)
+                .padding(4.dp)
+        )
     }
 }
 
@@ -349,11 +365,15 @@ private fun SongOptionsSheet(
                 .padding(horizontal = 8.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
-                .combinedClickable(onClick = onPlay)
+                .clickable(onClick = onPlay)
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(Icons.Outlined.PlayArrow, contentDescription = null)
+            Icon(
+                imageVector = Icons.Filled.PlayArrow,
+                contentDescription = null,
+                tint = Primary
+            )
             Spacer(modifier = Modifier.width(12.dp))
             Text("Play")
         }
@@ -366,11 +386,15 @@ private fun SongOptionsSheet(
                 .padding(horizontal = 8.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
-                .combinedClickable(onClick = onShare)
+                .clickable(onClick = onShare)
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(Icons.Outlined.Share, contentDescription = null)
+            Icon(
+                imageVector = Icons.Outlined.Share,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
             Spacer(modifier = Modifier.width(12.dp))
             Text("Share")
         }
@@ -383,12 +407,12 @@ private fun SongOptionsSheet(
                 .padding(horizontal = 8.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(MaterialTheme.colorScheme.errorContainer)
-                .combinedClickable(onClick = onDelete)
+                .clickable(onClick = onDelete)
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                Icons.Outlined.Delete,
+                imageVector = Icons.Outlined.Delete,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.error
             )
@@ -399,6 +423,6 @@ private fun SongOptionsSheet(
 }
 
 private fun formatDate(timestamp: Long): String {
-    val sdf = java.text.SimpleDateFormat("MMM d, yyyy", java.util.Locale.getDefault())
+    val sdf = java.text.SimpleDateFormat("MMM d", java.util.Locale.getDefault())
     return sdf.format(java.util.Date(timestamp))
 }
